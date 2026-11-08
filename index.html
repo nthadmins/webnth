@@ -354,6 +354,25 @@
     .product-description { min-height: 32px; margin: 0; color: #8993a9; font-size: 9px; line-height: 1.65; }
     .product-meta { display: flex; justify-content: space-between; gap: 8px; margin: 12px 0 11px; color: #778197; font-size: 8px; }
     .product-meta b { color: #b8c0d0; font-weight: 600; }
+    .price-options { display: grid; gap: 5px; margin-top: 12px; }
+    .price-option {
+      display: flex;
+      width: 100%;
+      min-height: 31px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 0 9px;
+      border: 1px solid rgba(157, 140, 255, .16);
+      border-radius: 7px;
+      color: #aeb6c9;
+      background: rgba(126, 106, 230, .055);
+      font-size: 9px;
+      cursor: pointer;
+      transition: background .18s ease, border-color .18s ease;
+    }
+    .price-option:hover { border-color: rgba(157, 140, 255, .4); background: rgba(126, 106, 230, .16); }
+    .price-option strong { color: #d0c6ff; font-size: 9px; font-weight: 750; }
     .product-buy { display: flex; width: 100%; min-height: 35px; align-items: center; justify-content: space-between; gap: 8px; padding: 0 10px; border: 1px solid rgba(157, 140, 255, .2); border-radius: 8px; color: #e6e1ff; background: rgba(126, 106, 230, .12); font-size: 9px; cursor: pointer; transition: background .18s ease, border-color .18s ease; }
     .product-buy:hover { border-color: rgba(157, 140, 255, .42); background: rgba(126, 106, 230, .22); }
     .product-buy strong { color: #c9bdff; font-size: 10px; }
@@ -585,10 +604,10 @@
         </div>
         <div class="filters" role="group" aria-label="Lọc sản phẩm">
           <button class="filter-chip active" type="button" data-category="Tất cả">Tất cả</button>
-          <button class="filter-chip" type="button" data-category="Giao diện">Giao diện</button>
-          <button class="filter-chip" type="button" data-category="Hình nền">Hình nền</button>
-          <button class="filter-chip" type="button" data-category="Bộ icon">Bộ icon</button>
-          <button class="filter-chip" type="button" data-category="Stream">Stream</button>
+          <button class="filter-chip" type="button" data-category="Aim bot">Aim bot</button>
+          <button class="filter-chip" type="button" data-category="Brutal">Brutal</button>
+          <button class="filter-chip" type="button" data-category="Bypass">Bypass</button>
+          <button class="filter-chip" type="button" data-category="Fake Lag">Fake Lag</button>
         </div>
         <div class="product-grid" id="productGrid"></div>
       </section>
@@ -630,13 +649,18 @@
   </dialog>
 
   <script>
+    const plans = [
+      { term: "1 Ngày", price: "15.000 VND" },
+      { term: "3 Ngày", price: "40.000 VND" },
+      { term: "7 Ngày", price: "50.000 VND" },
+      { term: "1 Tháng", price: "120.000 VND" }
+    ];
+
     const products = [
-      { name: "Giao diện Aurora", category: "Giao diện", description: "Bộ màu tím xanh dịu mắt cho màn hình làm việc.", price: "18.000 đ", stock: 24, sold: 108, icon: "✦", art: "art-aurora", word: "AURORA UI", badge: "ĐƯỢC YÊU THÍCH" },
-      { name: "Night Sky Wallpaper", category: "Hình nền", description: "12 hình nền bầu trời đêm, nhiều kích thước.", price: "12.000 đ", stock: 51, sold: 74, icon: "☾", art: "art-violet", word: "NIGHT SKY", badge: "TẢI NGAY" },
-      { name: "Pixel Bloom Icons", category: "Bộ icon", description: "Bộ icon pixel đồng bộ cho giao diện cá nhân.", price: "15.000 đ", stock: 30, sold: 62, icon: "✿", art: "art-coral", word: "PIXEL BLOOM", badge: "MỚI" },
-      { name: "NTH Stream Overlay", category: "Stream", description: "Khung màn hình và bảng thông tin cho livestream.", price: "35.000 đ", stock: 12, sold: 37, icon: "▧", art: "art-mint", word: "STREAM KIT", badge: "BỘ ĐẦY ĐỦ" },
-      { name: "Blue Hour Widgets", category: "Giao diện", description: "Widget lịch, đồng hồ và ghi chú phong cách xanh.", price: "22.000 đ", stock: 18, sold: 45, icon: "◷", art: "art-blue", word: "BLUE HOUR", badge: "TẢI NGAY" },
-      { name: "Warm Grain Presets", category: "Hình nền", description: "Preset màu ấm cùng bộ texture hạt mịn.", price: "19.000 đ", stock: 16, sold: 29, icon: "◈", art: "art-gold", word: "WARM GRAIN", badge: "BỘ 06" }
+      { name: "Aim bot", category: "Aim bot", description: "Chọn thời hạn sử dụng.", icon: "◎", art: "art-aurora", word: "AIM BOT", badge: "4 GÓI" },
+      { name: "Brutal", category: "Brutal", description: "Chọn thời hạn sử dụng.", icon: "ϟ", art: "art-coral", word: "BRUTAL", badge: "4 GÓI" },
+      { name: "Bypass", category: "Bypass", description: "Chọn thời hạn sử dụng.", icon: "↗", art: "art-violet", word: "BYPASS", badge: "4 GÓI" },
+      { name: "Fake Lag", category: "Fake Lag", description: "Chọn thời hạn sử dụng.", icon: "◷", art: "art-mint", word: "FAKE LAG", badge: "4 GÓI" }
     ];
 
     const reviews = [
@@ -674,12 +698,16 @@
         const textMatches = (product.name + " " + product.category + " " + product.description).toLocaleLowerCase("vi").includes(query);
         return categoryMatches && textMatches;
       });
-      document.getElementById("catalogCount").textContent = visibleProducts.length + " sản phẩm minh họa";
+      document.getElementById("catalogCount").textContent = visibleProducts.length + " mục";
       if (!visibleProducts.length) {
         grid.innerHTML = '<div class="empty-state">Không tìm thấy sản phẩm phù hợp. Hãy thử từ khóa khác.</div>';
         return;
       }
       grid.innerHTML = visibleProducts.map(function (product) {
+        const priceOptions = plans.map(function (plan) {
+          return '<button class="price-option" type="button" data-buy="' + product.name + '" data-term="' + plan.term + '" data-price="' + plan.price + '">' +
+            '<span>' + plan.term + '</span><strong>' + plan.price + '</strong></button>';
+        }).join("");
         return '<article class="product-card">' +
           '<div class="product-art ' + product.art + '">' +
             '<span class="stock-pill">' + product.badge + '</span>' +
@@ -690,8 +718,7 @@
             '<span class="product-category">' + product.category + '</span>' +
             '<h3>' + product.name + '</h3>' +
             '<p class="product-description">' + product.description + '</p>' +
-            '<div class="product-meta"><span>Kho: <b>' + product.stock + '</b></span><span>Đã bán: <b>' + product.sold + '</b></span></div>' +
-            '<button class="product-buy" type="button" data-buy="' + product.name + '"><span>Xem chi tiết</span><strong>' + product.price + '</strong></button>' +
+            '<div class="price-options" aria-label="Các gói thời hạn">' + priceOptions + '</div>' +
           '</div>' +
         '</article>';
       }).join("");
@@ -754,7 +781,7 @@
       if (!button) return;
       const product = products.find(function (item) { return item.name === button.dataset.buy; });
       if (!product) return;
-      openInfo(product.name, product.description + " Giá mẫu: " + product.price + ".", '<ul class="modal-list"><li>Kho mẫu: ' + product.stock + '</li><li>Trang demo chưa kết nối thanh toán hoặc giao hàng.</li><li>Thay thông tin mẫu bằng sản phẩm của bạn trước khi mở bán.</li></ul>');
+      openInfo(product.name + " · " + button.dataset.term, "Giá: " + button.dataset.price + ".", '<ul class="modal-list"><li>Trang demo chưa kết nối thanh toán hoặc giao hàng.</li><li>Thông tin gói được hiển thị theo cấu hình bạn cung cấp.</li></ul>');
     });
 
     document.querySelectorAll("[data-action]").forEach(function (button) {
